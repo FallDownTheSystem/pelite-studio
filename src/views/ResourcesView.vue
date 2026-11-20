@@ -22,8 +22,10 @@ export function prepare(doc: PeDocument): ViewContent<ResourcesData> {
 </script>
 
 <script setup lang="ts">
-import { Button } from '@ui-sdk/vue/button'
+import IconCollapse from '~icons/lucide/chevrons-down-up'
+import IconExpand from '~icons/lucide/chevrons-up-down'
 import { Tree } from '@ui-sdk/vue/tree'
+import IconButton from '@/components/ui/IconButton.vue'
 import { count } from '@/lib/format'
 import { branchValues, findNode } from './resources/tree'
 import ResourceDetail from './resources/ResourceDetail.vue'
@@ -45,6 +47,11 @@ function collapseAll() {
 	state.expanded = []
 }
 
+const typeCount = computed(() => {
+	const types = props.data.nodes.length
+	return `${count(types)} ${types === 1 ? 'type' : 'types'}`
+})
+
 const description = computed(
 	() =>
 		`${count(props.data.leaves)} ${props.data.leaves === 1 ? 'resource' : 'resources'} the program can load at run time (icons, version information, the manifest), filed by type, name and language.`,
@@ -53,26 +60,36 @@ const description = computed(
 
 <template>
 	<ViewPage title="Resources" :description="description" fill>
-		<template v-if="data.nodes.length" #actions>
-			<Button data-size="sm" @click="expandAll">Expand all</Button>
-			<Button data-size="sm" @click="collapseAll">Collapse all</Button>
-		</template>
 		<EmptyState v-if="!data.nodes.length" title="No resource entries in this file">
 			The resource directory exists but lists no types.
 		</EmptyState>
 		<div v-else class="flex min-h-0 flex-1 flex-col @2xl:flex-row">
 			<div
-				class="scroll-thin max-h-[50%] min-h-0 shrink-0 overflow-auto border-b border-subtle p-2 @2xl:max-h-none @2xl:w-[clamp(16rem,35%,26rem)] @2xl:border-e @2xl:border-b-0"
+				class="flex max-h-[50%] min-h-0 shrink-0 flex-col border-b border-subtle @2xl:max-h-none @2xl:w-[clamp(16rem,35%,26rem)] @2xl:border-e @2xl:border-b-0"
 			>
-				<Tree
-					v-model:value="state.selected"
-					v-model:expanded="state.expanded"
-					:items="data.nodes"
-					aria-label="Resource tree"
-					activation="automatic"
+				<!-- The two actions change the tree only, so they sit on the tree and not in the page header. -->
+				<div
+					class="flex h-8 shrink-0 items-center gap-1 border-b border-subtle ps-(--page-inset) pe-1.5 text-caption text-secondary"
 				>
-					<ResourceTreeItems :nodes="data.nodes" />
-				</Tree>
+					<span class="me-auto">{{ typeCount }}</span>
+					<IconButton label="Expand all" size="sm" side="top" @click="expandAll">
+						<IconExpand class="size-4" aria-hidden="true" />
+					</IconButton>
+					<IconButton label="Collapse all" size="sm" side="top" @click="collapseAll">
+						<IconCollapse class="size-4" aria-hidden="true" />
+					</IconButton>
+				</div>
+				<div class="scroll-thin min-h-0 flex-1 overflow-auto p-2">
+					<Tree
+						v-model:value="state.selected"
+						v-model:expanded="state.expanded"
+						:items="data.nodes"
+						aria-label="Resource tree"
+						activation="automatic"
+					>
+						<ResourceTreeItems :nodes="data.nodes" />
+					</Tree>
+				</div>
 			</div>
 			<div class="scroll-thin min-h-0 min-w-0 flex-1 overflow-auto px-4 py-3 @2xl:px-6">
 				<ResourceDetail v-if="selectedNode" :key="selectedNode.value" :node="selectedNode" />
