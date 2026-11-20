@@ -223,15 +223,12 @@ function onRowClick(entry: { row: Row; index: number }, position: number) {
 	selected.value = keyOf(entry)
 }
 
-/** A table that drives a detail pane listens for `selected`; its rows are chosen with a click. */
-const selectable = !!getCurrentInstance()?.vnode.props?.['onUpdate:selected']
-
 /**
- * A plain click on an address opens the address menu, as on an AddressText. A table that selects
- * rows keeps the click for selection; its addresses still answer a right click and Shift+F10.
+ * A plain click on the text of an address opens the address menu, as on an AddressText. In a
+ * table that selects rows, the same click also selects the row.
  */
 function onCellClick(event: MouseEvent, kind: unknown) {
-	if (selectable || !kind || event.button !== 0 || !(event.target instanceof Element)) return
+	if (!kind || event.button !== 0 || !(event.target instanceof Element)) return
 	if (event.target.closest('button, a, input, select, textarea')) return
 	// Dragging across the text to copy it ends in a click; that one must not open a menu.
 	if (document.getSelection()?.isCollapsed === false) return
@@ -439,30 +436,33 @@ const columnMinWidths = computed(() =>
 							column.align === 'end' ? 'text-end' : 'text-start',
 							column.mono ? 'num font-mono text-data' : '',
 							column.muted ? 'text-secondary' : '',
-							kindOf(column, entry)
-								? [
-										selectable ? 'cursor-context-menu' : 'cursor-pointer',
-										'underline decoration-transparent decoration-dotted underline-offset-4 group-hover/row:decoration-(--border-color-strong) group-focus-visible/row:decoration-(--border-color-strong)',
-									]
-								: '',
 						]"
 						:data-kind="kindOf(column, entry)"
-						@click="onCellClick($event, kindOf(column, entry))"
 						:title="fill ? text(column, entry) || undefined : undefined"
 						translate="no"
 					>
-						<slot
-							:name="`cell-${column.key}`"
-							:row="entry.row"
-							:index="entry.index"
-							:value="text(column, entry)"
+						<!-- The address text is the click target, not the cell, so the rest of the row stays free to select the row. -->
+						<span
+							:class="
+								kindOf(column, entry)
+									? 'cursor-pointer underline decoration-transparent decoration-dotted underline-offset-4 group-hover/row:decoration-(--border-color-strong) group-focus-visible/row:decoration-(--border-color-strong) hover:decoration-solid'
+									: 'contents'
+							"
+							@click="onCellClick($event, kindOf(column, entry))"
 						>
-							<template v-if="text(column, entry)">{{ text(column, entry) }}</template>
-							<template v-else>
-								<span class="text-disabled" aria-hidden="true">-</span>
-								<span class="sr-only">None</span>
-							</template>
-						</slot>
+							<slot
+								:name="`cell-${column.key}`"
+								:row="entry.row"
+								:index="entry.index"
+								:value="text(column, entry)"
+							>
+								<template v-if="text(column, entry)">{{ text(column, entry) }}</template>
+								<template v-else>
+									<span class="text-disabled" aria-hidden="true">-</span>
+									<span class="sr-only">None</span>
+								</template>
+							</slot>
+						</span>
 					</td>
 				</tr>
 				<tr v-if="padding.bottom" aria-hidden="true">

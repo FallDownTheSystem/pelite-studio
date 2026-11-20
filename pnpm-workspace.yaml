@@ -15,6 +15,8 @@ overrides:
   '@vue/runtime-vapor': 3.6.0-rc.16
   '@vue/server-renderer': 3.6.0-rc.16
   '@vue/shared': 3.6.0-rc.16
+# The project tracks prerelease versions of Vue, so an install must not wait for a package to age.
+minimumReleaseAge: 0
 peerDependencyRules:
   allowAny:
     - vue
