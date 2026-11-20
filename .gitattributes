@@ -1,0 +1,4 @@
+# The formatter requires CRLF (see `fmt.endOfLine` in vite.config.ts), so every checkout
+# gets CRLF, also on Linux where the publish workflow runs.
+* text=auto eol=crlf
+*.wasm binary
