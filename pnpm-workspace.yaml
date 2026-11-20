@@ -1,0 +1,20 @@
+catalog:
+  vite: npm:@voidzero-dev/vite-plus-core@8.3.8000
+  vite-plus: 1.7.0
+overrides:
+  vite@*: 'catalog:'
+  vue: 3.6.0-rc.16
+  '@vue/compiler-core': 3.6.0-rc.16
+  '@vue/compiler-dom': 3.6.0-rc.16
+  '@vue/compiler-sfc': 3.6.0-rc.16
+  '@vue/compiler-ssr': 3.6.0-rc.16
+  '@vue/compiler-vapor': 3.6.0-rc.16
+  '@vue/reactivity': 3.6.0-rc.16
+  '@vue/runtime-core': 3.6.0-rc.16
+  '@vue/runtime-dom': 3.6.0-rc.16
+  '@vue/runtime-vapor': 3.6.0-rc.16
+  '@vue/server-renderer': 3.6.0-rc.16
+  '@vue/shared': 3.6.0-rc.16
+peerDependencyRules:
+  allowAny:
+    - vue

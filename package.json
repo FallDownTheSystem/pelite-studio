@@ -1,0 +1,56 @@
+{
+	"name": "pelite-studio",
+	"version": "0.0.0",
+	"private": true,
+	"description": "A browser inspector for Windows PE files",
+	"license": "GPL-3.0-only",
+	"type": "module",
+	"scripts": {
+		"dev": "vp dev",
+		"build": "vue-tsc -b && vp build",
+		"preview": "vp preview",
+		"check": "vp check",
+		"typecheck": "vue-tsc --noEmit -p tsconfig.app.json",
+		"agent-bridge": "node tools/agent-bridge/bridge.mjs"
+	},
+	"dependencies": {
+		"@tailwindcss/vite": "^4.3.5",
+		"@tanstack/vue-virtual": "^3.13.52",
+		"@ui-sdk/core": "0.1.0-beta.13",
+		"@ui-sdk/vue": "0.1.0-beta.13",
+		"@vueuse/core": "^15.0.0",
+		"motion-v": "^2.13.0",
+		"tailwindcss": "^4.3.5",
+		"vue": "3.6.0-rc.16"
+	},
+	"devDependencies": {
+		"@fontsource-variable/ibm-plex-sans": "^5.3.0",
+		"@fontsource/ibm-plex-mono": "^5.3.0",
+		"@iconify-json/lucide": "^1.2.157",
+		"@modelcontextprotocol/sdk": "^1.32.2",
+		"@testing-library/dom": "^10.4.2",
+		"@testing-library/user-event": "^14.6.13",
+		"@testing-library/vue": "^8.1.0",
+		"@types/node": "^24.19.2",
+		"@types/ws": "^8.18.2",
+		"@vitejs/plugin-vue": "^6.0.10",
+		"@vue/tsconfig": "^0.9.1",
+		"jsdom": "^31.0.1",
+		"typescript": "~6.0.3",
+		"unplugin-auto-import": "^21.1.0",
+		"unplugin-icons": "^24.0.0",
+		"unplugin-vue-components": "^32.1.0",
+		"vite": "catalog:",
+		"vite-plugin-vue-devtools": "^8.2.1",
+		"vite-plus": "catalog:",
+		"vue-tsc": "^3.3.14",
+		"ws": "^8.23.0"
+	},
+	"devEngines": {
+		"packageManager": {
+			"name": "pnpm",
+			"version": "12.21.0",
+			"onFail": "download"
+		}
+	}
+}

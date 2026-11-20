@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+	<style>
+		path { fill: #006b74 }
+		text { fill: #fcfdfe }
+		@media (prefers-color-scheme: dark) {
+			path { fill: #4fc4cf }
+			text { fill: #0b1418 }
+		}
+	</style>
+	<!-- A 24 by 26 tile with 3px corners and a 6px top right corner, drawn at 1.125 times. -->
+	<path d="M5.875 1.375H22.25A6.75 6.75 0 0 1 29 8.125V27.25A3.375 3.375 0 0 1 25.625 30.625H5.875A3.375 3.375 0 0 1 2.5 27.25V4.75A3.375 3.375 0 0 1 5.875 1.375Z" />
+	<text x="15.75" y="16" dy=".36em" text-anchor="middle" font-family="system-ui, 'Segoe UI', sans-serif" font-size="13" font-weight="700">PE</text>
+</svg>

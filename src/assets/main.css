@@ -1,0 +1,334 @@
+@layer ui-sdk;
+
+@import 'tailwindcss';
+@import '@ui-sdk/core/web.css' layer(components);
+
+/*
+ * One mechanism for light and dark: every color is a light-dark() pair and
+ * `color-scheme` picks the side. The page follows the system until
+ * `data-theme` on <html> pins one. Keep it that way: a `dark:` variant or a
+ * prefers-color-scheme query for single values would split the mechanism.
+ *
+ * Components use the semantic names below and never a raw color. When a role
+ * has no token, add one here with both values and measure its contrast.
+ */
+@theme {
+	--color-*: initial;
+
+	--font-sans: 'IBM Plex Sans Variable', ui-sans-serif, system-ui, 'Segoe UI', sans-serif;
+	--font-mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+
+	/* Sized for a dense tool: 13px interface text, 12px for data and secondary labels. */
+	--text-caption: 0.75rem;
+	--text-caption--line-height: 1rem;
+	--text-data: 0.75rem;
+	--text-data--line-height: 1.25rem;
+	--text-body: 0.8125rem;
+	--text-body--line-height: 1.25rem;
+	--text-heading: 0.9375rem;
+	--text-heading--line-height: 1.375rem;
+	--text-title: 1.25rem;
+	--text-title--line-height: 1.75rem;
+	--text-title--letter-spacing: -0.01em;
+	--text-display: 1.75rem;
+	--text-display--line-height: 2.125rem;
+	--text-display--letter-spacing: -0.02em;
+
+	/* Surfaces, lightest separation first: page, then surface chrome, then raised popups. */
+	--background-color-page: light-dark(oklch(0.985 0.003 230), oklch(0.175 0.008 235));
+	--background-color-surface: light-dark(oklch(0.966 0.004 230), oklch(0.205 0.009 235));
+	--background-color-raised: light-dark(oklch(0.995 0.002 230), oklch(0.24 0.01 235));
+	--background-color-sunken: light-dark(oklch(0.952 0.005 230), oklch(0.15 0.008 235));
+	--background-color-hover: light-dark(oklch(0.2 0.02 230 / 0.05), oklch(1 0 0 / 0.06));
+	--background-color-pressed: light-dark(oklch(0.2 0.02 230 / 0.09), oklch(1 0 0 / 0.1));
+	--background-color-scrim: light-dark(oklch(0.2 0.02 230 / 0.35), oklch(0 0 0 / 0.55));
+
+	--text-color-primary: light-dark(oklch(0.22 0.012 230), oklch(0.93 0.006 230));
+	--text-color-secondary: light-dark(oklch(0.46 0.012 230), oklch(0.78 0.01 230));
+	--text-color-disabled: light-dark(oklch(0.62 0.01 230), oklch(0.56 0.01 230));
+
+	/* Subtle and default are hairlines; strong is the edge of a control and keeps 3:1. */
+	--border-color-subtle: light-dark(oklch(0.2 0.02 230 / 0.09), oklch(1 0 0 / 0.08));
+	--border-color-default: light-dark(oklch(0.2 0.02 230 / 0.15), oklch(1 0 0 / 0.13));
+	--border-color-strong: light-dark(oklch(0.58 0.012 230), oklch(0.54 0.012 230));
+
+	/* Accent marks what can be acted on and what is selected. Never use it on static text. */
+	--color-accent: light-dark(oklch(0.48 0.082 205), oklch(0.78 0.1 200));
+	--color-accent-hover: light-dark(oklch(0.43 0.075 205), oklch(0.84 0.09 200));
+	--color-accent-subtle: light-dark(oklch(0.93 0.035 200), oklch(0.3 0.045 205));
+	--color-accent-border: light-dark(oklch(0.78 0.07 200), oklch(0.45 0.07 205));
+	--color-on-accent: light-dark(oklch(0.995 0.002 230), oklch(0.17 0.02 220));
+	--color-focus: light-dark(oklch(0.55 0.092 205), oklch(0.74 0.105 200));
+
+	--color-danger: light-dark(oklch(0.5 0.19 25), oklch(0.76 0.14 22));
+	--color-danger-subtle: light-dark(oklch(0.95 0.025 20), oklch(0.27 0.06 22));
+	--color-warning: light-dark(oklch(0.48 0.1 70), oklch(0.82 0.12 85));
+	--color-warning-subtle: light-dark(oklch(0.95 0.05 85), oklch(0.28 0.05 80));
+	--color-success: light-dark(oklch(0.46 0.11 155), oklch(0.78 0.13 155));
+	--color-success-subtle: light-dark(oklch(0.95 0.04 155), oklch(0.27 0.05 155));
+
+	/*
+	 * Categorical series for things that have no order, like sections on an address map.
+	 * Equal lightness within a theme so no series reads as more important.
+	 */
+	--color-series-1: light-dark(oklch(0.56 0.1 205), oklch(0.74 0.1 200));
+	--color-series-2: light-dark(oklch(0.56 0.13 300), oklch(0.74 0.11 300));
+	--color-series-3: light-dark(oklch(0.56 0.12 75), oklch(0.74 0.11 80));
+	--color-series-4: light-dark(oklch(0.56 0.15 15), oklch(0.74 0.12 15));
+	--color-series-5: light-dark(oklch(0.56 0.12 150), oklch(0.74 0.12 150));
+	--color-series-6: light-dark(oklch(0.56 0.13 255), oklch(0.74 0.1 255));
+	--color-series-7: light-dark(oklch(0.56 0.13 340), oklch(0.74 0.11 340));
+	--color-series-8: light-dark(oklch(0.56 0.09 110), oklch(0.74 0.1 115));
+
+	--shadow-popover:
+		0 0 0 1px light-dark(oklch(0.2 0.02 230 / 0.1), oklch(1 0 0 / 0.1)),
+		0 2px 4px -1px light-dark(oklch(0.2 0.02 230 / 0.08), oklch(0 0 0 / 0.4)),
+		0 8px 16px -4px light-dark(oklch(0.2 0.02 230 / 0.12), oklch(0 0 0 / 0.5));
+	--shadow-window:
+		0 0 0 1px light-dark(oklch(0.2 0.02 230 / 0.12), oklch(1 0 0 / 0.12)),
+		0 4px 8px -2px light-dark(oklch(0.2 0.02 230 / 0.1), oklch(0 0 0 / 0.45)),
+		0 16px 32px -8px light-dark(oklch(0.2 0.02 230 / 0.18), oklch(0 0 0 / 0.6));
+
+	--ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+	--ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+@utility num {
+	font-variant-numeric: tabular-nums slashed-zero;
+}
+
+/* Thin scrollbars for panes and tables. The page itself never scrolls. */
+@utility scroll-thin {
+	scrollbar-width: thin;
+	scrollbar-color: var(--border-color-strong) transparent;
+}
+
+:root {
+	color-scheme: light dark;
+
+	/* web.css draws every ui-sdk part from these, so the parts follow the tokens above. */
+	--ui-background: var(--background-color-raised);
+	--ui-foreground: var(--text-color-primary);
+	--ui-muted: light-dark(oklch(0.945 0.005 230), oklch(0.29 0.012 235));
+	--ui-muted-foreground: var(--text-color-secondary);
+	--ui-border: var(--border-color-default);
+	--ui-input: var(--border-color-strong);
+	--ui-primary: var(--color-accent);
+	--ui-primary-foreground: var(--color-on-accent);
+	--ui-destructive: var(--color-danger);
+	--ui-ring: var(--color-focus);
+	--ui-ring-border: var(--color-focus);
+	--ui-overlay: var(--background-color-scrim);
+	--ui-shadow: var(--shadow-popover);
+	--ui-radius: 0.25rem;
+	/* 3.5px makes a control 28px high, the density of the rest of the interface. */
+	--ui-spacing: 0.21875rem;
+	--ui-font-size: 0.8125rem;
+	--ui-line-height: 1.25rem;
+	--ui-font-sans: var(--font-sans);
+	--ui-font-mono: var(--font-mono);
+}
+
+:root[data-theme='light'] {
+	color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+	color-scheme: dark;
+}
+
+@layer base {
+	html,
+	body {
+		height: 100%;
+		overscroll-behavior: none;
+	}
+
+	body {
+		background: var(--background-color-page);
+		color: var(--text-color-primary);
+		font-family: var(--font-sans);
+		font-size: var(--text-body);
+		line-height: var(--text-body--line-height);
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+		accent-color: var(--color-accent);
+		caret-color: var(--color-accent);
+	}
+
+	::selection {
+		background: var(--color-accent-subtle);
+		color: var(--text-color-primary);
+	}
+
+	:focus-visible {
+		outline: 2px solid var(--color-focus);
+		outline-offset: 2px;
+	}
+
+	/* Rows, tabs and cells sit against a clipping edge, so their ring is drawn inside. */
+	[data-focus='inset']:focus-visible {
+		outline-offset: -2px;
+	}
+}
+
+/*
+ * A 4px ring is too heavy at this density; every part gets the same 2px ring as native controls.
+ * The rule goes into web.css's own layer on purpose: web.css removes the outline from a part
+ * that sits inside a box which draws the ring itself, and a rule in any later layer would put
+ * it back whatever its specificity.
+ */
+@layer components {
+	@layer ui-sdk {
+		:where([data-slot]):focus-visible {
+			outline: 2px solid var(--color-focus);
+			outline-offset: 2px;
+		}
+	}
+
+	/* Boxes around their own parts, such as a search field with an icon: one ring, on the box. */
+	:is(
+		[data-slot='input-group'],
+		[data-slot='password-input'],
+		[data-slot='date-input'],
+		[data-slot='time-input']
+	):has(:focus-visible) {
+		outline: 2px solid var(--color-focus);
+		outline-offset: 2px;
+	}
+}
+
+/*
+ * Button variants on top of the ones web.css ships (default outline, solid, destructive).
+ * `ghost` is for toolbar and icon buttons that sit on chrome; `data-size="sm"` is 24px for tab bars.
+ */
+:is(
+	[data-slot='button'],
+	[data-slot='toggle'],
+	[data-slot='tooltip-trigger'],
+	[data-slot='menu-trigger'],
+	[data-slot='dialog-trigger'],
+	[data-slot='dialog-close'],
+	[data-slot='alert-dialog-trigger'],
+	[data-slot='alert-dialog-close'],
+	[data-slot='popover-trigger'],
+	[data-slot='popover-close'],
+	[data-slot='file-input-trigger'],
+	[data-slot='toolbar-button']
+) {
+	@media (prefers-reduced-motion: no-preference) {
+		transition: scale var(--motion-fast) var(--ease-out);
+
+		&:not([data-disabled], :disabled):active {
+			scale: 0.97;
+		}
+	}
+
+	&[data-variant='ghost'] {
+		border-color: transparent;
+		background: transparent;
+		color: var(--text-color-secondary);
+
+		&:hover:not([data-disabled]) {
+			background: var(--background-color-hover);
+			color: var(--text-color-primary);
+		}
+
+		&:is([data-pressed], [data-open]) {
+			background: var(--background-color-pressed);
+			color: var(--text-color-primary);
+		}
+	}
+
+	&[data-size='sm'] {
+		height: 1.5rem;
+		padding-inline: 0.5rem;
+		font-size: var(--text-caption);
+
+		/* Text beside an icon is a text node, not a child, so only an explicit mark can say "icon only". */
+		&[data-icon-only] {
+			width: 1.5rem;
+			padding: 0;
+		}
+	}
+}
+
+/*
+ * A toolbar here groups actions in a view's toolbar row, where a box around them would be a
+ * frame inside the page. Kept in the components layer so a utility class still wins.
+ */
+@layer components {
+	[data-slot='toolbar'] {
+		gap: 0.5rem;
+		padding: 0;
+		border: 0;
+		border-radius: 0;
+		background: none;
+	}
+
+	/* A meter here shows a measured value, not a choice, so it is neutral; the accent stays for what can be acted on. */
+	[data-slot='meter-indicator'] {
+		background: var(--text-color-secondary);
+	}
+}
+
+/* A tree fills its column here, and its current and selected rows use the accent tint like every other selection. */
+[data-slot='tree'] {
+	max-width: none;
+}
+
+[data-slot='tree-item']:focus-visible {
+	outline: none;
+}
+
+/*
+ * The selection sits 3px inside the control (2px padding and a 1px border), so its radius is
+ * the control's radius less 3px. At the 4px default that leaves 1px, which reads as a square.
+ */
+[data-slot='segmented-control'] {
+	--segmented-radius: var(--radius-md);
+	border-radius: var(--segmented-radius);
+}
+
+[data-slot='segmented-control-item'],
+[data-slot='segmented-control-indicator'] {
+	border-radius: calc(var(--segmented-radius) - 3px);
+}
+
+/* Moved with translate, not left and top, so the slide stays off the layout path. */
+[data-slot='segmented-control-indicator'] {
+	top: 0;
+	left: 0;
+	translate: var(--segmented-control-indicator-left) var(--segmented-control-indicator-top);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	/* No slide on the first placement: the selection must not fly in from the corner. */
+	[data-slot='segmented-control-indicator']:not([data-activation-direction='none']) {
+		transition:
+			translate var(--motion-enter) var(--ease-out),
+			width var(--motion-enter) var(--ease-out);
+	}
+}
+
+[data-slot='tree-item']:focus-visible > [data-slot='tree-label'] {
+	outline: 2px solid var(--color-focus);
+	outline-offset: -2px;
+}
+
+[data-slot='tree-label']:is([data-selected], [data-current]) {
+	background: var(--color-accent-subtle);
+}
+
+/* The default meter reserves 12rem, which no table cell has. */
+td [data-slot='meter'] {
+	min-width: 0;
+}
+
+/* Set for one frame while the theme changes, so 200 transitions do not run at once. */
+.no-transitions,
+.no-transitions *,
+.no-transitions *::before,
+.no-transitions *::after {
+	transition: none !important;
+}
