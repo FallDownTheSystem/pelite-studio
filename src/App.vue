@@ -10,6 +10,7 @@ import { errorMessage } from '@/lib/format'
 import { duration, easeIconSwap } from '@/lib/motion'
 import { confirm, toast } from '@/lib/overlays'
 import { PeDocument } from '@/pe/document'
+import { fetchLinkedFile, linkedFile } from '@/pe/linked'
 import { loadPelite, type Pelite } from '@/pe/pelite'
 import type { StatusTone } from '@/pe/view'
 import AppHeader from '@/shell/AppHeader.vue'
@@ -32,6 +33,7 @@ const loadError = ref('')
 const doc = shallowRef<PeDocument | null>(null)
 const docKey = ref(0)
 const opening = ref(false)
+const fetching = ref(false)
 const openError = ref('')
 const sidebarOpen = ref(true)
 const workspace = useTemplateRef('workspace')
@@ -61,7 +63,29 @@ async function start() {
 	}
 }
 
-onMounted(start)
+/** Opens the file that the address of the page names, so a link or a frame can show one file. */
+async function openLinked() {
+	const linked = linkedFile(location.search, location.href)
+	if (!linked) return
+	fetching.value = true
+	setStatus('busy', 'Fetching file', linked.name)
+	let file: File
+	try {
+		file = await fetchLinkedFile(linked)
+	} catch (error) {
+		openError.value = `${linked.name} could not be fetched from ${linked.url.host} (${errorMessage(error)}). Check the address, and that its site lets this page read the file.`
+		setStatus('error', 'File not opened', openError.value)
+		return
+	} finally {
+		fetching.value = false
+	}
+	await openFile(file)
+}
+
+onMounted(async () => {
+	await start()
+	if (pelite.value) await openLinked()
+})
 
 useTitle(computed(() => (doc.value ? `${doc.value.file.name} · PeLite Studio` : 'PeLite Studio')))
 
@@ -153,7 +177,7 @@ onBeforeUnmount(() => doc.value?.dispose())
 		class="group/app isolate flex h-dvh w-full max-w-none min-w-0 flex-col gap-0 bg-page text-primary"
 		aria-label="Open a PE file"
 		:value="[]"
-		:disabled="!pelite || opening"
+		:disabled="!pelite || opening || fetching"
 		@value-change="onFiles"
 		@reject="onReject"
 	>
@@ -178,7 +202,7 @@ onBeforeUnmount(() => doc.value?.dispose())
 			<OpenScreen
 				v-else
 				:ready="!!pelite"
-				:opening="opening"
+				:opening="opening || fetching"
 				:load-error="loadError"
 				:open-error="openError"
 				@retry="start"

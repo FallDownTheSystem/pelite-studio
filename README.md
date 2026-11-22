@@ -30,6 +30,16 @@ vp build                                         # production build in dist/
 | `src/components/ui/`  | Shared parts: the data table, the page frame, notices, tags                                                  |
 | `src/assets/main.css` | Design tokens for the light theme and the dark theme                                                         |
 
+## Open a file from a link
+
+The address of the page can name a file to open: `?file=<address>`. The address is read like a link on the page, so it can be a path beside the site or a full address on another site. Another site must allow the page to read the file (CORS). Add `name=<name>` for the name to show when the last part of the address is not one.
+
+```
+https://falldownthesystem.github.io/pelite-studio/?file=https://files.example/zlib1-3f2a.dll&name=zlib1.dll
+```
+
+The file is fetched by the browser tab, without cookies or a referrer, and is parsed there like a chosen file.
+
 ## Connect an agent
 
 An AI agent can read the open file and operate the page. There are two ways in.
